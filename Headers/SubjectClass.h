@@ -62,7 +62,7 @@ int64_t Subject::GetResultingFeasibleTime() const { // Возвражает до
     for (size_t i = 0; i < INT64_SIZE; i++) {
         if (result_feasible_time & (1 << i))
             for (size_t j = 1; j < duration; j++)
-                if (!(result_feasible_time & (1 << i)) || ((i+j) % PAIRS_IN_DAY == 0)) {
+                if (!(result_feasible_time & (1 << (i+j))) || ((i+j) % PAIRS_IN_DAY == 0)) {
                     result_feasible_time &= ~(1 << i);
                     break;
                 }

@@ -26,14 +26,19 @@ public:
     Event();
     Event(std::string name_, size_t duration_, Teacher *teacher_, Time start_time_, Cabinet *cabinet_);
     void Print();
-    Event& operator=(Event event);
+    Event& operator=(const Event& event);
+    bool operator==(Event& event);
+    std::string GetName() const;
     size_t GetDuration() const;
     Teacher* GetTeacher() const;
-    Time GetStartTime() const;
+    Time& GetStartTime();
     Cabinet* GetCabinet() const;
+    void AssignCabinet(Cabinet *cab);
+    bool IsActive() const;
     void Deactivate();
     void AssignEvent(std::string name_, size_t duration_, Teacher *teacher_, Time start_time_, Cabinet *cabinet_);
     void PrintIfActive();
+    void Compare(Event &b);
 };
 
 Event::Event()
@@ -77,7 +82,7 @@ void Event::PrintIfActive() {
     }
 }
 
-Event& Event::operator=(const Event event) {
+Event& Event::operator=(const Event& event) {
     name = event.name;
     duration = event.duration;
     teacher = event.teacher;
@@ -88,6 +93,10 @@ Event& Event::operator=(const Event event) {
     return *this;
 }
 
+std::string Event::GetName() const {
+    return name;
+}
+
 size_t Event::GetDuration() const {
     return duration;
 }
@@ -96,12 +105,20 @@ Teacher* Event::GetTeacher() const {
     return teacher;
 }
 
-Time Event::GetStartTime() const {
+Time& Event::GetStartTime() {
     return start_time;
 }
 
 Cabinet* Event::GetCabinet() const {
     return cabinet;
+}
+
+void Event::AssignCabinet(Cabinet *cab) {
+    cabinet = cab;
+}
+
+bool Event::IsActive() const {
+    return is_active;
 }
 
 void Event::Deactivate() {
@@ -114,6 +131,30 @@ void Event::AssignEvent(std::string name_, size_t duration_, Teacher *teacher_, 
     teacher = teacher_;
     start_time = start_time_;
     cabinet = cabinet_;
+}
+
+bool Event::operator==(Event& event) {
+    if (name != event.name)
+        return false;
+    if (duration != event.duration)
+        return false;
+    if (teacher != event.teacher)
+        return false;
+
+    return true;
+}
+
+void Event::Compare(Event &b) {
+    if (*this == b)
+        return;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    Print();
+    std::cout << std::endl;
+    b.Print();
+    std::cout << std::endl;
+    std::cout << std::endl;
+
 }
 
 #endif //TIMETABLE_EVENTCLASS_H

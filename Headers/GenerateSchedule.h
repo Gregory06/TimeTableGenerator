@@ -9,8 +9,8 @@
 #include "TeacherClass.h"
 #include "GroupClass.h"
 #include "EventClass.h"
-#include "TimeTableClass.h"
 #include "Constants.h"
+
 
 Cabinet* GetFeasibleCabinet(std::map<std::string,Cabinet>& cabinets, Time start_time, size_t duration, size_t total_participants) {
     Cabinet* fesible_cabinet = nullptr;
@@ -38,6 +38,8 @@ void RandomPermutation(std::vector<T> &vector) {
     }
 }
 
+#include "TimeTableClass.h"
+
 void DeleteEvent(TimeTable<Event>& timetable, Time time, std::vector<Group*> &groups) {
     Event &event(timetable[(*groups.begin())->GetName()]->GetElem(time));
     event.Deactivate();
@@ -49,7 +51,7 @@ void DeleteEvent(TimeTable<Event>& timetable, Time time, std::vector<Group*> &gr
     }
 }
 
-int GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<std::string,Subject>& subjects,
+TimeTable<Event>& GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<std::string,Subject>& subjects,
                             std::map<std::string,Teacher>& teachers, std::map<std::string,Group>& groups,
                             std::map<std::string,Cabinet>& cabinets) {
     SubjectStorage subject_storage;
@@ -60,13 +62,15 @@ int GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<std::string,Sub
     Subject *current_subject = nullptr;
     Time start_time;
     while (!subject_storage.QueueEmpty()) {
-        std::cout << "_______" << std::endl;
-        subject_storage.StorageSize();
+        std::srand(time(NULL));
+//        std::cout << "_______" << std::endl;
+//        subject_storage.StorageSize();
         if (prev_place_founded) {
             current_subject = subject_storage.QueueGetMin();
             subject_storage.MoveMinToStack();
             int64_t feasible_time = current_subject->GetResultingFeasibleTime();
-            std::vector<Time> shufled_fesible_time = Int2Vector(feasible_time);
+            std::vector<Time> shufled_fesible_time {};
+            Int2Vector(shufled_fesible_time, feasible_time);
             RandomPermutation(shufled_fesible_time);
             times_stack.push_back(shufled_fesible_time);
         } else {
@@ -101,10 +105,10 @@ int GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<std::string,Sub
             prev_place_founded = false;
         if (subject_storage.StackEmpty()) {
             std::cout << "GENERATION FAIL" << std::endl;
-            return -1;
+            return timetable;
         }
     }
-    return 0;
+    return timetable;
 }
 
 #endif //TIMETABLE_GENERATESCHEDULE_H

@@ -9,12 +9,11 @@
 
 namespace DataLoader {
 
-    std::map<std::string, Cabinet> GetCabinets(const std::string filename) {
+    std::map<std::string, Cabinet>& GetCabinets(std::map<std::string, Cabinet> &cabinets, const std::string filename) {
         std::string name;
         size_t capacity = 0;
         int64_t availible_time = 0;
 
-        std::map<std::string, Cabinet> cabinets {};
         std::ifstream file(filename);
         if (!file) {
             std::cout << "ERROR" << std::endl;
@@ -45,10 +44,11 @@ namespace DataLoader {
         return cabinets;
     }
 
-    std::map<std::string, Subject> GetSubjects(const std::string &filename, std::map<std::string, Teacher> &teachers, std::map<std::string, Group> &groups) {
+    std::map<std::string, Subject>& GetSubjects(std::map<std::string, Subject> &subjects, const std::string &filename,
+                                                std::map<std::string, Teacher> &teachers, std::map<std::string,
+                                                Group> &groups) {
         std::string name, teacher_name, group_name;
         size_t duration = 0;
-        std::map<std::string, Subject> subjects {};
         std::ifstream file(filename);
         if (!file) {
             std::cout << "ERROR" << std::endl;
@@ -78,10 +78,9 @@ namespace DataLoader {
         return subjects;
     }
 
-    std::map<std::string, Teacher> GetTeachers(const std::string filename) {
+    std::map<std::string, Teacher>& GetTeachers(std::map<std::string, Teacher> &teachers, const std::string filename) {
         std::string name;
         int64_t feasible_time = 0;
-        std::map<std::string, Teacher> teachers {};
         std::ifstream file(filename);
         if (!file) {
             std::cout << "ERROR" << std::endl;
@@ -111,12 +110,10 @@ namespace DataLoader {
         return teachers;
     }
 
-    std::map<std::string, Group> GetGroups(const std::string filename) {
+    std::map<std::string, Group>& GetGroups(std::map<std::string, Group> &groups, const std::string filename) {
         std::string name;
         size_t student_number = 0;
         int64_t feasible_time = 0;
-
-        std::map<std::string, Group> groups {};
         std::ifstream file(filename);
         if (!file) {
             std::cout << "ERROR" << std::endl;

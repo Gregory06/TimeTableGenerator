@@ -17,6 +17,7 @@ public:
 
 
     Schedule(size_t days_in_week, size_t pairs_in_day);
+    Schedule(Schedule *example);
     Schedule();
     T& operator[](Time time);
     void Print();
@@ -28,6 +29,11 @@ template <typename T>
 Schedule<T>::Schedule(size_t days_in_week, size_t pairs_in_day)
     :schedule(days_in_week, std::vector<T> (pairs_in_day))
 {}
+
+template <typename T>
+Schedule<T>::Schedule(Schedule *example) {
+
+}
 
 template <typename T>
 Schedule<T>::Schedule() {}

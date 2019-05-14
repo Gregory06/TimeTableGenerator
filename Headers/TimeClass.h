@@ -69,12 +69,10 @@ int64_t Vector2Int(std::vector<Time>& times) {
     return result;
 }
 
-std::vector<Time> Int2Vector(int64_t times) {
-    std::vector<Time> result;
+void Int2Vector(std::vector<Time> &result, int64_t times) {
     for (size_t i = 0; i < INT64_SIZE; i++)
         if (times & (1 << i))
             result.push_back(Time(i / PAIRS_IN_DAY, i % PAIRS_IN_DAY));
-    return result;
 }
 
 #endif //TIMETABLE_TIMECLASS_H
