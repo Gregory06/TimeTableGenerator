@@ -24,6 +24,7 @@ public:
 
     size_t GetAvailibleTimeLen() const;
     int64_t GetFeasibleTime() const;
+    std::string GetName() const;
     void Print() const;
     void TakeTime(Time time);
     void ReleaseTime(Time time);
@@ -49,6 +50,10 @@ size_t Teacher::GetAvailibleTimeLen() const {
 
 int64_t Teacher::GetFeasibleTime() const {
     return feasible_time;
+}
+
+std::string Teacher::GetName() const {
+    return name;
 }
 
 void Teacher::Print() const {

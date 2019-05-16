@@ -17,7 +17,7 @@ class Group {
 
     std::string name;
     size_t student_number;
-    Schedule<Event> *schedule;
+//    Schedule<Event> *schedule;
     int64_t available_time;
 
 public:

@@ -16,6 +16,7 @@ class Event {
 
     std::string name;
     size_t duration;
+    size_t type;
     Teacher *teacher;
     Time start_time;
     Cabinet *cabinet;
@@ -24,15 +25,18 @@ class Event {
 public:
 
     Event();
-    Event(std::string name_, size_t duration_, Teacher *teacher_, Time start_time_, Cabinet *cabinet_);
+    Event(std::string name_, size_t duration_, size_t type, Teacher *teacher_, Time start_time_, Cabinet *cabinet_);
     void Print();
     Event& operator=(const Event& event);
     bool operator==(Event& event);
     std::string GetName() const;
     size_t GetDuration() const;
     Teacher* GetTeacher() const;
+    void SetTeacher(Teacher* teacher_);
     Time& GetStartTime();
     Cabinet* GetCabinet() const;
+    size_t GetType() const;
+    void SetCabinet(Cabinet* cabinet_);
     void AssignCabinet(Cabinet *cab);
     bool IsActive() const;
     void Deactivate();
@@ -50,9 +54,10 @@ Event::Event()
     is_active(false)
 {}
 
-Event::Event(std::string name_, size_t duration_, Teacher *teacher_, Time start_time_, Cabinet *cabinet_)
+Event::Event(std::string name_, size_t duration_, size_t type_, Teacher *teacher_, Time start_time_, Cabinet *cabinet_)
     : name(name_),
     duration(duration_),
+    type(type_),
     teacher(teacher_),
     start_time(start_time_),
     cabinet(cabinet_),
@@ -85,10 +90,11 @@ void Event::PrintIfActive() {
 Event& Event::operator=(const Event& event) {
     name = event.name;
     duration = event.duration;
+    type = event.type;
     teacher = event.teacher;
     start_time = event.start_time;
-    cabinet = event.cabinet;
     is_active = event.is_active;
+    cabinet = event.cabinet;
 
     return *this;
 }
@@ -105,12 +111,24 @@ Teacher* Event::GetTeacher() const {
     return teacher;
 }
 
+void Event::SetTeacher(Teacher* teacher_) {
+    teacher = teacher_;
+}
+
 Time& Event::GetStartTime() {
     return start_time;
 }
 
 Cabinet* Event::GetCabinet() const {
     return cabinet;
+}
+
+size_t Event::GetType() const {
+    return type;
+}
+
+void Event::SetCabinet(Cabinet *cabinet_) {
+    cabinet = cabinet_;
 }
 
 void Event::AssignCabinet(Cabinet *cab) {

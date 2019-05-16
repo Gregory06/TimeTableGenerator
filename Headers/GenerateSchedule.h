@@ -30,8 +30,8 @@ void RandomPermutation(std::vector<T> &vector) {
     size_t permutations_count = vector.size();
     T helper;
     for (size_t i = 0; i < permutations_count; i++) {
-        size_t first_index = rand() % permutations_count;
-        size_t second_index = rand() % permutations_count;
+        size_t first_index = random() % permutations_count;
+        size_t second_index = random() % permutations_count;
         helper = vector[first_index];
         vector[first_index] = vector[second_index];
         vector[second_index] = helper;
@@ -54,6 +54,7 @@ void DeleteEvent(TimeTable<Event>& timetable, Time time, std::vector<Group*> &gr
 TimeTable<Event>& GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<std::string,Subject>& subjects,
                             std::map<std::string,Teacher>& teachers, std::map<std::string,Group>& groups,
                             std::map<std::string,Cabinet>& cabinets) {
+
     SubjectStorage subject_storage;
     subject_storage.FillStorage(subjects);
 
@@ -94,7 +95,7 @@ TimeTable<Event>& GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<s
 
             std::vector<Group *> groups(current_subject->GetGroups());
             timetable.InsertEvent(current_subject->GetName(), current_subject->GetDuration(),
-                                  current_subject->GetTeacher(),
+                                  current_subject->GetType(), current_subject->GetTeacher(),
                                   groups, start_time, feasible_cabinet);
 
             prev_place_founded = true;

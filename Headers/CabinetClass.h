@@ -19,8 +19,9 @@ class Cabinet {
 public:
 
     Cabinet(std::string name_, size_t capacity_, int64_t availible_time_);
-    size_t GetCapacity();
-    bool IsFeasible(Time start_time, size_t duration);
+    std::string GetName() const;
+    size_t GetCapacity() const;
+    bool IsFeasible(Time start_time, size_t duration) const;
     void TakeTime(Time time);
     void ReleaseTime(Time time);
     void Print() const;
@@ -33,11 +34,15 @@ Cabinet::Cabinet(std::string name_, size_t capacity_, int64_t availible_time_)
           available_time(availible_time_)
 {}
 
-size_t Cabinet::GetCapacity() {
+std::string Cabinet::GetName() const {
+    return name;
+}
+
+size_t Cabinet::GetCapacity() const {
     return capacity;
 }
 
-bool Cabinet::IsFeasible(Time start_time, size_t duration) {
+bool Cabinet::IsFeasible(Time start_time, size_t duration) const {
     bool is_feasible = true;
     for (size_t i = start_time.GetIndex(); i < start_time.GetIndex() + duration; i++) {
         is_feasible = (bool) (available_time & (1 << i));

@@ -48,7 +48,7 @@ namespace DataLoader {
                                                 std::map<std::string, Teacher> &teachers, std::map<std::string,
                                                 Group> &groups) {
         std::string name, teacher_name, group_name;
-        size_t duration = 0;
+        size_t duration = 0, type = 0;
         std::ifstream file(filename);
         if (!file) {
             std::cout << "ERROR" << std::endl;
@@ -67,12 +67,13 @@ namespace DataLoader {
             }
             name = tokens[0];
             duration = (int64_t) std::stoull(tokens[1]);
-            teacher_name = tokens[2];
-            for (auto i = tokens.begin()+3; i != tokens.end(); i++) {
+            type = (int64_t) std::stoull(tokens[2]);
+            teacher_name = tokens[3];
+            for (auto i = tokens.begin()+4; i != tokens.end(); i++) {
                 involved_groups.push_back(&groups.at(*i));
             }
 
-            subjects.insert(std::pair(name, Subject(name, duration, &teachers.at(teacher_name), involved_groups)));
+            subjects.insert(std::pair(name, Subject(name, duration, type, &teachers.at(teacher_name), involved_groups)));
 
         }
         return subjects;

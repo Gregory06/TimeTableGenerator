@@ -22,12 +22,12 @@ class TimeTable {
 
 public:
 
-    TimeTable(std::string filename, size_t days_in_week, size_t pairs_in_day);
-    TimeTable(const TimeTable<T> &example);
+    TimeTable(std::vector<std::string>& group_names, size_t days_in_week, size_t pairs_in_day);
+    TimeTable(const TimeTable<T> &example, std::map<std::string, Teacher>& teachers, std::map<std::string, Cabinet>& cabinets);
     TimeTable();
     Schedule<T>* operator[](std::string group);
     T& GetElemByName(std::string elem) const;
-    void InsertEvent(std::string name, size_t duration, Teacher *teacher, std::vector<Group*>& groups, Time start_time, Cabinet *cabinet);
+    void InsertEvent(std::string name, size_t duration, size_t type, Teacher *teacher, std::vector<Group*>& groups, Time start_time, Cabinet *cabinet);
     void InsertEvent(T& elem, std::vector<Group*>& groups);
     void DeleteEvent(Time time, std::vector<Group*> &groups);
     void Print();
@@ -35,6 +35,7 @@ public:
     bool RandomSwap(std::map<std::string, Subject> &subjects, std::vector<std::string> &subjects_name, std::map<std::string, Cabinet> &cabinets);
     bool Move(T& elem, std::map<std::string, Subject> &subjects, std::map<std::string, Cabinet> &cabinets);
     bool RandomMove(std::map<std::string, Subject> &subjects, std::vector<std::string> &subjects_name, std::map<std::string, Cabinet> &cabinets);
+    std::map<std::string, Schedule<T>*>& GetTable();
     void CompareTables(TimeTable<Event>& b);
     void DumpElems();
 
@@ -44,24 +45,10 @@ public:
 #include "GenerateSchedule.h"
 
 template <typename T>
-TimeTable<T>::TimeTable(std::string filename, size_t days_in_week, size_t pairs_in_day)
+TimeTable<T>::TimeTable(std::vector<std::string>& group_names, size_t days_in_week, size_t pairs_in_day)
     : days(days_in_week),
     pair(pairs_in_day) {
 
-    size_t groups_number = 0;
-    std::vector<std::string> group_names {};
-    std::ifstream file(filename);
-    if (!file) {
-        std::cout << "ERROR" << std::endl;
-        return;
-    }
-    std::string line;
-    size_t pos;
-    while (std::getline(file, line)) {
-        pos = line.find(DELIMETER);
-        group_names.push_back(line.substr(0, pos));
-        groups_number++;
-    }
     for (auto i = group_names.begin(); i < group_names.end(); i++) {
         Schedule<T> *schedule = new Schedule<T>(days_in_week, pairs_in_day);
         table.insert(std::pair(*i, schedule));
@@ -70,12 +57,15 @@ TimeTable<T>::TimeTable(std::string filename, size_t days_in_week, size_t pairs_
 }
 
 template <typename T>
-TimeTable<T>::TimeTable(const TimeTable<T> &example) {
+TimeTable<T>::TimeTable(const TimeTable<T> &example, std::map<std::string, Teacher>& teachers, std::map<std::string, Cabinet>& cabinets)
+    : elements(example.elements)
+    {
+//    std::cout << "Babe im fucked up" << std::endl;
     for (auto i = example.table.begin(); i != example.table.end(); i++) {
-        Schedule<T> *new_schedule = new Schedule<T>(example.days, example.pair);
-        for (size_t k = 0; k < example.days; k++)
-            for (size_t j = 0; j < example.pair; j++)
-                new_schedule->operator[](Time (k,j)) = (*i).second->operator[](Time (k,j));
+        Schedule<T> *new_schedule = new Schedule<T>(*(*i).second, teachers, cabinets);
+//        for (size_t k = 0; k < example.days; k++)
+//            for (size_t j = 0; j < example.pair; j++)
+//                new_schedule->operator[](Time (k,j)) = (*i).second->operator[](Time (k,j));
         table.insert(std::pair((*i).first, new_schedule));
     }
 }
@@ -105,10 +95,10 @@ void TimeTable<T>::Print() {
 }
 
 template <typename T>
-void TimeTable<T>::InsertEvent(std::string name, size_t duration, Teacher *teacher, std::vector<Group*>& groups, Time start_time, Cabinet *cabinet) {
+void TimeTable<T>::InsertEvent(std::string name, size_t duration, size_t type, Teacher *teacher, std::vector<Group*>& groups, Time start_time, Cabinet *cabinet) {
     for (size_t j = 0; j < duration; j++) {
         for (auto i = groups.begin(); i != groups.end(); i++) {
-            table[(*i)->GetName()]->GetElem(start_time + j) = Event(name, duration, teacher, start_time, cabinet);
+            table[(*i)->GetName()]->GetElem(start_time + j) = Event(name, duration, type, teacher, start_time, cabinet);
             (*i)->TakeTime(start_time+j);
         }
         teacher->TakeTime(start_time+j);
@@ -231,8 +221,8 @@ bool TimeTable<T>::Move(T& elem, std::map<std::string, Subject> &subjects, std::
         if (!cabinet)
             continue;
         InsertEvent(subject.GetName(), subject.GetDuration(),
-                          subject.GetTeacher(),
-                          groups, *time, cabinet);
+                    subject.GetType(), subject.GetTeacher(),
+                    groups, *time, cabinet);
         return true;
     }
 
@@ -251,6 +241,10 @@ bool TimeTable<T>::RandomMove(std::map<std::string, Subject> &subjects, std::vec
         }
 
     return false;
+}
+template <typename T>
+std::map<std::string, Schedule<T>*>& TimeTable<T>::GetTable() {
+    return table;
 }
 
 template <typename T>
@@ -281,8 +275,11 @@ void TimeTable<Event>::CompareTables(TimeTable<Event>& b) {
 
 template <typename T>
 TimeTable<T>::~TimeTable() {
-    for (auto i = table.begin(); i != table.end(); i++)
+    for (auto i = table.begin(); i != table.end(); i++) {
+//        std::cout << "TimeTable deleting" << std::endl;
         delete (*i).second;
+    }
+//    std::cout << "TimeTable deleted" << std::endl;
 }
 
 

@@ -18,13 +18,14 @@ class Subject {
 
     std::string name;
     size_t duration;
+    size_t type; // 0 -- семинар, 1 -- лекция
     Teacher* teacher;
     std::vector<Group*> groups;
     size_t total_participants;
 
 public:
 
-    Subject(std::string name_, size_t duration_, Teacher* teacher_, std::vector<Group*> &groups_);
+    Subject(std::string name_, size_t duration_, size_t type_, Teacher* teacher_, std::vector<Group*> &groups_);
 
     size_t GetTeacherTimeLen() const;
     int64_t GetResultingFeasibleTime() const;
@@ -34,11 +35,14 @@ public:
     std::string GetName() const;
     Teacher* GetTeacher() const;
     std::vector<Group*> GetGroups() const;
+    size_t GetType() const;
+    void Reconstruct(const Subject& example, std::map<std::string,Teacher>& teachers_, std::map<std::string,Group>& groups_);
 
 };
 
-Subject::Subject(std::string name_, size_t duration_, Teacher* teacher_, std::vector<Group*> &groups_)
+Subject::Subject(std::string name_, size_t duration_, size_t type_, Teacher* teacher_, std::vector<Group*> &groups_)
         : name(name_),
+          type(type_),
           teacher(teacher_),
           duration(duration_) {
 
@@ -100,6 +104,21 @@ Teacher* Subject::GetTeacher() const {
 
 std::vector<Group*> Subject::GetGroups() const {
     return groups;
+}
+
+size_t Subject::GetType() const {
+    return type;
+}
+
+void Subject::Reconstruct(const Subject& example, std::map<std::string,Teacher>& teachers_,
+                          std::map<std::string,Group>& groups_) {
+    name = example.name;
+    duration = example.duration;
+    total_participants = example.total_participants;
+    teacher = &teachers_.at(example.teacher->GetName());
+    groups.clear();
+    for (auto i = example.groups.begin(); i != example.groups.end(); i++)
+        groups.push_back(&groups_.at((*i)->GetName()));
 }
 
 // ##################
