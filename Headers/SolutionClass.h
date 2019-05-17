@@ -61,15 +61,6 @@ Solution::Solution(const Solution& solution_)
     {
         for (auto i = solution_.subjects.begin(); i != solution_.subjects.end(); i++)
             subjects.at((*i).first).Reconstruct((*i).second, teachers, groups);
-//        for (auto group = groups.begin(); group != groups.end(); group++)
-//            for (size_t i = 0; i < DAYS_IN_WEEK; i++)
-//                for (size_t j =0; j < PAIRS_IN_DAY; j++)
-//                    if (solution[(*group).first]->GetElem(Time(i,j)).GetTeacher()) {
-//                        std::cout << solution[(*group).first]->GetElem(Time(i,j)).GetTeacher() << std::endl;
-//                        std::cout << solution[(*group).first]->GetElem(Time(i,j)).GetName() << std::endl;
-//                        solution[(*group).first]->GetElem(Time(i,j)).SetTeacher(&teachers.at(solution[(*group).first]->GetElem(Time(i,j)).GetTeacher()->GetName()));
-//                        solution[(*group).first]->GetElem(Time(i,j)).SetCabinet(&cabinets.at(solution[(*group).first]->GetElem(Time(i,j)).GetCabinet()->GetName()));
-//                    }
     }
 
 void Solution::GetRandomSolution() {
@@ -88,12 +79,7 @@ TimeTable<Event>& Solution::GetSolution() {
     return solution;
 }
 
-Solution::~Solution() {
-//    std::cout << "Solution deleting" <<std::endl;
-//    solution.~TimeTable();
-//    std::cout << "Solution deleted" <<std::endl;
-
-}
+Solution::~Solution() {}
 
 class TestSolution {
 public:

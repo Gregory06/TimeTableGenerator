@@ -36,6 +36,7 @@ public:
     bool Move(T& elem, std::map<std::string, Subject> &subjects, std::map<std::string, Cabinet> &cabinets);
     bool RandomMove(std::map<std::string, Subject> &subjects, std::vector<std::string> &subjects_name, std::map<std::string, Cabinet> &cabinets);
     std::map<std::string, Schedule<T>*>& GetTable();
+    void WriteCSV(std::string filename);
     void CompareTables(TimeTable<Event>& b);
     void DumpElems();
 
@@ -138,6 +139,8 @@ template <typename T>
 bool TimeTable<T>::Swap(T& elem1, T& elem2, std::map<std::string, Subject> &subjects, std::map<std::string, Cabinet> &cabinets) {
     T temp1(elem1), temp2(elem2);
     std::vector<Group*> group1(subjects.at(elem1.GetName()).GetGroups()), group2(subjects.at(elem2.GetName()).GetGroups());
+    if (!GroupIntersection(group1, group2))
+        return false;
     Subject subject1(subjects.at(elem1.GetName())), subject2(subjects.at(elem2.GetName()));
     DeleteEvent(elem1.GetStartTime(), group1);
     DeleteEvent(elem2.GetStartTime(), group2);
@@ -176,10 +179,10 @@ bool TimeTable<T>::Swap(T& elem1, T& elem2, std::map<std::string, Subject> &subj
     temp2.GetStartTime() = temp1.GetStartTime();
     temp1.GetStartTime() = temp_time;
 
-    std::cout << std::endl;
-    temp1.Print();
-    temp2.Print();
-    std::cout << std::endl;
+//    std::cout << std::endl;
+//    temp1.Print();
+//    temp2.Print();
+//    std::cout << std::endl;
 
     InsertEvent(temp1, group1);
     InsertEvent(temp2, group2);
@@ -242,9 +245,44 @@ bool TimeTable<T>::RandomMove(std::map<std::string, Subject> &subjects, std::vec
 
     return false;
 }
+
 template <typename T>
 std::map<std::string, Schedule<T>*>& TimeTable<T>::GetTable() {
     return table;
+}
+
+template <typename T>
+void TimeTable<T>::WriteCSV(std::string filename) {
+     std::ofstream file;
+     file.open(filename);
+     if (!file.is_open()) {
+         std::cout << "FILE " << filename << " OPENING ERROR" << std::endl;
+         return;
+     }
+     file.clear();
+     file << "D, P";
+     for (auto group = table.begin(); group != table.end(); group++)
+         for (size_t i = 0; i < 3; i++)
+             file << ", " << (*group).first;
+     file << std::endl;
+
+     for (size_t day = 0; day < DAYS_IN_WEEK; day++)
+         for (size_t pair = 0; pair < PAIRS_IN_DAY; pair++) {
+             file << day << ", " << pair;
+             for (auto group = table.begin(); group != table.end(); group++) {
+                 file << ", " << (*group).second->GetElem(Time(day, pair)).GetName();
+                 if ((*group).second->GetElem(Time(day, pair)).GetTeacher()) {
+                     file << ", " << (*group).second->GetElem(Time(day, pair)).GetTeacher()->GetName();
+                     file << ", " << (*group).second->GetElem(Time(day, pair)).GetCabinet()->GetName();
+                 } else {
+                     file << ", , ";
+                 }
+             }
+             file << std::endl;
+         }
+
+
+     file.close();
 }
 
 template <typename T>
@@ -276,10 +314,8 @@ void TimeTable<Event>::CompareTables(TimeTable<Event>& b) {
 template <typename T>
 TimeTable<T>::~TimeTable() {
     for (auto i = table.begin(); i != table.end(); i++) {
-//        std::cout << "TimeTable deleting" << std::endl;
         delete (*i).second;
     }
-//    std::cout << "TimeTable deleted" << std::endl;
 }
 
 

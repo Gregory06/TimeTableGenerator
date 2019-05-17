@@ -15,7 +15,7 @@ template <typename T, typename F>
 class ArtificialBeeColony {
 protected:
     std::list<std::pair<T*, size_t>> solutions {};
-    std::pair<T, size_t> current_best_solution;
+    std::pair<T*, size_t> current_best_solution;
 
     size_t population_size;
     size_t maximum_cycle_number;
@@ -37,7 +37,7 @@ public:
 
     ArtificialBeeColony(size_t population_size, size_t maximum_cycle_number, size_t single_source_limit);
 
-    T FindOptimal();
+    T* FindOptimal();
 
 };
 
@@ -53,10 +53,7 @@ ArtificialBeeColony<T,F>::ArtificialBeeColony(size_t population_size_, size_t ma
 template <typename T, typename F>
 void ArtificialBeeColony<T,F>::SendScouts() {
     while (solutions.size() < population_size) {
-        std::cout << "Generating" << std::endl;
         solutions.push_back(std::pair(GetSource(), 0));
-        std::cout << "Generated" << std::endl;
-
     }
 }
 
@@ -64,8 +61,6 @@ template <typename T, typename F>
 void ArtificialBeeColony<T,F>::SendEmploedBees() {
     for (auto i = solutions.begin(); i != solutions.end(); i++) {
         ManageSource(i);
-        std::cout << "DONE " << (*i).second << std::endl;
-
     }
 }
 
@@ -86,32 +81,18 @@ void ArtificialBeeColony<T,F>::SendOnlookerBees() {
 }
 
 template <typename T, typename F>
-T ArtificialBeeColony<T,F>::FindOptimal() {
+T* ArtificialBeeColony<T,F>::FindOptimal() {
 
     for (size_t j = 0; j < maximum_cycle_number; j++) {
 
-        std::cout << "HI1" << std::endl;
         SendScouts();
-        std::cout << "HI2" << std::endl;
         SendEmploedBees();
-        std::cout << "HI3" << std::endl;
         SendOnlookerBees();
+
+        std::cout << "THe BEsT ScORE is " << current_best_solution.second << std::endl;
 
     }
 
-//    for (auto i = solutions.begin(); i != solutions.end(); i++) {
-//        std::cout << " ____________________" << std::endl;
-//        std::cout << " ____________________" << std::endl;
-//        std::cout << " ____________________" << std::endl;
-//        (*i).first->GetSolution().Print();
-//        std::cout << " ____________________" << std::endl;
-//        std::cout << " ____________________" << std::endl;
-//        std::cout << " ____________________" << std::endl;
-//    }
-
-    std::cout << "GET IT!!" <<std::endl;
-    std::cout << "THe BEsT ScORE is " << current_best_solution.second << std::endl;
-    current_best_solution.first->GetSolution().Print();
     return current_best_solution.first;
 }
 
@@ -127,34 +108,22 @@ double ArtificialBeeColony<T,F>::ValuesSum() {
 template <typename T, typename F>
 void ArtificialBeeColony<T,F>::ManageSource(typename std::list<std::pair<T*, size_t>>::iterator source) {
     auto new_solution = new Solution(*(*source).first);
-//    auto new_solution = Construct(*(*source).first);
-//    new_solution->GetSolution().Print();
-
-//    new_solution->GetSolution().Print();
-//    delete new_solution;
-    std::cout << "FIND NEW SOL" << std::endl;
     ModifySolution(*new_solution);
 
     size_t current_score = cost_function.Count(new_solution->GetSolution());
     if (current_score < cost_function.Count((*source).first->GetSolution())) {
-        std::cout << "1" << std::endl;
-
-//        delete (*source).first;
         (*source).first = new_solution;
         (*source).second = 0;
     } else {
-        std::cout << "2" << std::endl;
-
         delete new_solution;
         (*source).second++;
     }
     if (cost_function.Count((*source).first->GetSolution()) < current_best_solution.second) {
-        current_best_solution.first = *(*source).first;
+        delete current_best_solution.first;
+        current_best_solution.first = new Solution(*(*source).first);
         current_best_solution.second = cost_function.Count((*source).first->GetSolution());
     }
     if ((*source).second > single_source_limit) {
-        std::cout << "3" << std::endl;
-
         delete (*source).first;
         solutions.erase(source);
     }

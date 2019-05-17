@@ -17,7 +17,6 @@ class Group {
 
     std::string name;
     size_t student_number;
-//    Schedule<Event> *schedule;
     int64_t available_time;
 
 public:
@@ -66,6 +65,14 @@ void Group::TakeTime(const Time time){
 void Group::ReleaseTime(const Time time) {
     size_t index = time.GetIndex();
     available_time |= 1 << index;
+}
+
+bool GroupIntersection(std::vector<Group*> group1,std::vector<Group*> group2) {
+    for (auto i = group1.begin(); i != group1.end(); i++)
+        for (auto j = group2.begin(); j != group2.end(); j++)
+            if ((*i)->GetName() == (*j)->GetName())
+                return true;
+    return false;
 }
 
 #endif //TIMETABLE_GROUPCLASS_H

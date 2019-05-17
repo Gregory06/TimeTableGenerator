@@ -19,9 +19,9 @@ double CostFunction::Count(TimeTable<Event>& timetable) {
 
                 if ((*group).second->GetElem(Time(day,pair)).IsActive())
                     if ((*group).second->GetElem(Time(day,pair)).GetType() == LECTURE)
-                        cost+=2;
+                        cost+=2*pair;
                     else
-                        cost++;
+                        cost+=pair;
 
     return cost;
 }

@@ -36,34 +36,13 @@ int main() {
     std::map<std::string, Cabinet> cabinets;
     DataLoader::GetCabinets(cabinets, "../DataToLoad/cabinets.txt");
 
-    std::vector<std::string> group_names;
-    for (auto i = groups.begin(); i != groups.end(); i++)
-        group_names.push_back((*i).first);
+    TimeTableCreator optim(10, 100, 15, subjects, teachers, groups, cabinets);
 
-    TimeTable<Event>* table = new TimeTable<Event>(group_names, DAYS_IN_WEEK, PAIRS_IN_DAY);
-//    GenerateRandomSchedule(*table, subjects, teachers, groups, cabinets);
-//    TimeTable<Event> table(group_names, DAYS_IN_WEEK, PAIRS_IN_DAY);
-//
-//    GenerateRandomSchedule(table, subjects, teachers, groups, cabinets);
-//    table->Print();
-//    table.DumpElems();
-//    TimeTable<Event> table1(table);
-//    std::vector<std::string> sbjs;
-//    for (auto i = subjects.begin(); i != subjects.end(); i++)
-//        sbjs.push_back((*i).first);
-//    table.RandomMove(subjects, sbjs, cabinets);
-//    table.Print();
-//    table.CompareTables(table1);
-
-    TimeTableCreator optim(10, 50, 10, subjects, teachers, groups, cabinets);
-
-    TimeTable<Event> best(optim.FindOptimal().GetSolution(), teachers, cabinets);
+    TimeTable<Event> best(optim.FindOptimal()->GetSolution(), teachers, cabinets);
+    best.WriteCSV("../Output/result.txt");
 
     std::cout << "BEST SOLUTION" << std::endl;
     best.Print();
-
-//    TestABC opt(20, 100, 30);
-//    std::cout << opt.FindOptimal().value << std::endl;
 
     return 0;
 }
