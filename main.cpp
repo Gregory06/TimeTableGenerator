@@ -10,20 +10,6 @@
 
 int main() {
 
-//    std::vector<int> a{1,2,3,4,5};
-//
-//    std::vector<int> &c = a;
-//    std::vector<int> b(c);
-//
-//    b[0]=666;
-//
-//    for (auto i = a.begin(); i != a.end(); i ++)
-//        std::cout << *i << std::endl;
-//    for (auto i = b.begin(); i != b.end(); i ++)
-//        std::cout << *i << std::endl;
-//
-//    return 0;
-
     std::map<std::string, Teacher> teachers;
     DataLoader::GetTeachers(teachers, "../DataToLoad/teachers.txt");
 
