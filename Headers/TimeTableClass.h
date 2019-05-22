@@ -260,22 +260,23 @@ void TimeTable<T>::WriteCSV(std::string filename) {
          return;
      }
      file.clear();
-     file << "D, P";
+     file << "D;P";
      for (auto group = table.begin(); group != table.end(); group++)
-         for (size_t i = 0; i < 3; i++)
-             file << ", " << (*group).first;
+//         for (size_t i = 0; i < 3; i++)
+             file << ";" << (*group).first;
      file << std::endl;
 
      for (size_t day = 0; day < DAYS_IN_WEEK; day++)
          for (size_t pair = 0; pair < PAIRS_IN_DAY; pair++) {
-             file << day << ", " << pair;
+             file << day << ";" << pair;
              for (auto group = table.begin(); group != table.end(); group++) {
-                 file << ", " << (*group).second->GetElem(Time(day, pair)).GetName();
+                 file << ";" << (*group).second->GetElem(Time(day, pair)).GetName();
                  if ((*group).second->GetElem(Time(day, pair)).GetTeacher()) {
-                     file << ", " << (*group).second->GetElem(Time(day, pair)).GetTeacher()->GetName();
-                     file << ", " << (*group).second->GetElem(Time(day, pair)).GetCabinet()->GetName();
+                     file << "#" << (*group).second->GetElem(Time(day, pair)).GetTeacher()->GetName();
+                     file << "#" << (*group).second->GetElem(Time(day, pair)).GetCabinet()->GetName();
+//                     file << ";";
                  } else {
-                     file << ", , ";
+                     file << "##";
                  }
              }
              file << std::endl;
