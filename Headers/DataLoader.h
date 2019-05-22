@@ -69,10 +69,10 @@ namespace DataLoader {
             duration = (int64_t) std::stoull(tokens[1]);
             type = (int64_t) std::stoull(tokens[2]);
             teacher_name = tokens[3];
+
             for (auto i = tokens.begin()+4; i != tokens.end(); i++) {
                 involved_groups.push_back(&groups.at(*i));
             }
-
             subjects.insert(std::pair(name, Subject(name, duration, type, &teachers.at(teacher_name), involved_groups)));
 
         }

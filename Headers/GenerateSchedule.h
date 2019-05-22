@@ -68,22 +68,27 @@ TimeTable<Event>& GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<s
 //        subject_storage.StorageSize();
         if (prev_place_founded) {
             current_subject = subject_storage.QueueGetMin();
+//            std::cout << "OK0" << std::endl;
             subject_storage.MoveMinToStack();
             int64_t feasible_time = current_subject->GetResultingFeasibleTime();
             std::vector<Time> shufled_fesible_time {};
             Int2Vector(shufled_fesible_time, feasible_time);
             RandomPermutation(shufled_fesible_time);
             times_stack.push_back(shufled_fesible_time);
+//            std::cout << "OK1" << std::endl;
         } else {
             subject_storage.MoveTopToQueue();
             times_stack.pop_back();
             current_subject = subject_storage.StackGetTop();
             std::vector<Group *> groups(current_subject->GetGroups());
+//            std::cout << "OK2" << std::endl;
             DeleteEvent(timetable, times_stack.back().back(), groups);
+//            std::cout << "OK3" << std::endl;
             times_stack.back().pop_back();
         }
 
         while (!times_stack.back().empty()) {
+//            std::cout << "OK5" << std::endl;
             start_time = times_stack.back().back();
             Cabinet *feasible_cabinet = GetFeasibleCabinet(cabinets, start_time, current_subject->GetDuration(),
                                                            current_subject->GetParticipantsNumber());
@@ -94,6 +99,14 @@ TimeTable<Event>& GenerateRandomSchedule(TimeTable<Event>& timetable, std::map<s
             }
 
             std::vector<Group *> groups(current_subject->GetGroups());
+//            std::cout << "OK6" << std::endl;
+//            std::cout << current_subject->GetName() << ' ' << current_subject->GetDuration() << ' ' << ' ' \
+//            << current_subject->GetTeacher()->GetName() << ' ' <<feasible_cabinet->GetName() << std::endl;
+//            for (auto i = groups.begin(); i != groups.end(); i++)
+//                std::cout << (*i)->GetName() << std::endl;
+
+//            std::cout << "IM OK" << std::endl;
+
             timetable.InsertEvent(current_subject->GetName(), current_subject->GetDuration(),
                                   current_subject->GetType(), current_subject->GetTeacher(),
                                   groups, start_time, feasible_cabinet);

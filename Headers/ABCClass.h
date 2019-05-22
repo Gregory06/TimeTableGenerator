@@ -53,6 +53,8 @@ ArtificialBeeColony<T,F>::ArtificialBeeColony(size_t population_size_, size_t ma
 template <typename T, typename F>
 void ArtificialBeeColony<T,F>::SendScouts() {
     while (solutions.size() < population_size) {
+//        std::cout << "OK" << std::endl;
+
         solutions.push_back(std::pair(GetSource(), 0));
     }
 }
@@ -60,6 +62,8 @@ void ArtificialBeeColony<T,F>::SendScouts() {
 template <typename T, typename F>
 void ArtificialBeeColony<T,F>::SendEmploedBees() {
     for (auto i = solutions.begin(); i != solutions.end(); i++) {
+        std::cout << "OK" << std::endl;
+
         ManageSource(i);
     }
 }
@@ -85,8 +89,13 @@ T* ArtificialBeeColony<T,F>::FindOptimal() {
 
     for (size_t j = 0; j < maximum_cycle_number; j++) {
 
+//        std::cout << "OK" << std::endl;
         SendScouts();
+//        std::cout << "OK" << std::endl;
+
         SendEmploedBees();
+//        std::cout << "OK" << std::endl;
+
         SendOnlookerBees();
 
         std::cout << "THe BEsT ScORE is " << current_best_solution.second << std::endl;
@@ -108,7 +117,10 @@ double ArtificialBeeColony<T,F>::ValuesSum() {
 template <typename T, typename F>
 void ArtificialBeeColony<T,F>::ManageSource(typename std::list<std::pair<T*, size_t>>::iterator source) {
     auto new_solution = new Solution(*(*source).first);
+//    std::cout << "HI1" << std::endl;
+
     ModifySolution(*new_solution);
+//    std::cout << "HI2" << std::endl;
 
     size_t current_score = cost_function.Count(new_solution->GetSolution());
     if (current_score < cost_function.Count((*source).first->GetSolution())) {
@@ -123,10 +135,13 @@ void ArtificialBeeColony<T,F>::ManageSource(typename std::list<std::pair<T*, siz
         current_best_solution.first = new Solution(*(*source).first);
         current_best_solution.second = cost_function.Count((*source).first->GetSolution());
     }
+
     if ((*source).second > single_source_limit) {
         delete (*source).first;
         solutions.erase(source);
     }
+
+
 
 }
 
@@ -207,9 +222,12 @@ Solution* TimeTableCreator::GetSource() {
 void TimeTableCreator::ModifySolution(Solution& solution) {
     size_t rand = random() % 100;
     if (rand > 70) {
+//        std::cout << "HIrs" << std::endl;
         solution.RandomSwap(subject_names);
     }
     else {
+//        std::cout << "HIrm" << std::endl;
+
         solution.RandomMove(subject_names);
     }
 }

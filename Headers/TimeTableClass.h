@@ -137,6 +137,7 @@ void TimeTable<T>::DeleteEvent(Time time, std::vector<Group*> &groups) {
 
 template <typename T>
 bool TimeTable<T>::Swap(T& elem1, T& elem2, std::map<std::string, Subject> &subjects, std::map<std::string, Cabinet> &cabinets) {
+//    std::cout << elements.at("Дифференциальные уравнения").first << std::endl;
     T temp1(elem1), temp2(elem2);
     std::vector<Group*> group1(subjects.at(elem1.GetName()).GetGroups()), group2(subjects.at(elem2.GetName()).GetGroups());
     if (!GroupIntersection(group1, group2))
@@ -198,12 +199,16 @@ bool TimeTable<T>::RandomSwap(std::map<std::string, Subject> &subjects, std::vec
     RandomPermutation(random_permutation_to);
     for (auto i = random_permutation_from.begin(); i != random_permutation_from.end(); i++)
         for (auto j = random_permutation_to.begin(); j != random_permutation_to.end(); j++)
-            if (*i != *j)
+            if (*i != *j) {
+//                std::cout << *i << " | " << *j << std::endl;
+//                std::cout << elements.at(*i).first << " | ";
+//                std::cout << elements.at(*j).first << std::endl;
                 if (Swap(table[elements.at(*i).first]->GetElem(elements.at(*i).second),
                          table[elements.at(*j).first]->GetElem(elements.at(*j).second),
                          subjects, cabinets)) {
                     return true;
                 }
+            }
 
     return false;
 }
